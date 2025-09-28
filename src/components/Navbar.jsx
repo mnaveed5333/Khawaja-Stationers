@@ -1,13 +1,9 @@
 // components/Navbar.jsx
 import React, { useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
-import { FaShoppingCart } from 'react-icons/fa';
-import { useCart } from '../context/CartContext';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { getCartItemsCount } = useCart();
-  const cartCount = getCartItemsCount();
 
   return (
     <nav className="bg-gray-900 fixed top-0 w-full z-50">
@@ -46,24 +42,6 @@ const Navbar = () => {
             >
               Products
             </NavLink>
-
-            {/* Cart Link */}
-            <NavLink
-              to="/cart"
-              className={({ isActive }) =>
-                isActive
-                  ? "px-3 py-2 rounded-md text-sm font-medium bg-gray-800 text-white transition-all relative"
-                  : "px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800 transition-all relative"
-              }
-            >
-              Cart
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {cartCount}
-                </span>
-              )}
-            </NavLink>
-
             <NavLink
               to="/services"
               className={({ isActive }) =>
@@ -139,25 +117,6 @@ const Navbar = () => {
               >
                 Products
               </NavLink>
-
-              {/* Mobile Cart Link */}
-              <NavLink
-                to="/cart"
-                onClick={() => setIsOpen(false)}
-                className={({ isActive }) =>
-                  isActive
-                    ? "px-3 py-2 rounded-md text-base font-medium bg-gray-700 text-white relative"
-                    : "px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 relative"
-                }
-              >
-                Cart
-                {cartCount > 0 && (
-                  <span className="ml-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 inline-flex items-center justify-center">
-                    {cartCount}
-                  </span>
-                )}
-              </NavLink>
-
               <NavLink
                 to="/services"
                 onClick={() => setIsOpen(false)}

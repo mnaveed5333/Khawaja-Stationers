@@ -1,15 +1,6 @@
-# E-commerce Features Implementation TODO
-
-## Plan Breakdown
-
-- [x] Update src/main.jsx to wrap App with CartProvider for global cart state.
-- [x] Update src/App.jsx to add /cart and /checkout routes.
-- [x] Update src/components/Navbar.jsx to add cart icon/link with counter badge.
-- [x] Update src/pages/ProductCategory.jsx to implement addToCart functionality on product buttons.
-- [x] Create src/pages/Cart.jsx to display cart items, allow quantity updates/removals, and show total.
-- [x] Create src/pages/Checkout.jsx with customer form, order summary, and WhatsApp integration for order completion.
-
-## Follow-up Steps (After Implementation)
-- [ ] Test cart functionality: Add items from ProductCategory, view in Cart, update quantities, remove items.
-- [ ] Test checkout: Fill form in Checkout, verify WhatsApp message generation and link opening.
-- [ ] Ensure responsive design and styling consistency on new Cart and Checkout pages.
+- [x] Remove cart functionality from Products.jsx: remove imports, functions, replace button with WhatsApp link
+- [x] Remove cart functionality from ProductCategory.jsx: remove imports, functions, replace button with WhatsApp link
+- [ ] Remove images from Products.jsx and ProductCategory.jsx
+- [ ] Add 10 more products to each category in ProductCategory.jsx (without images)
+- [ ] Remove cart from everywhere: delete CartContext.jsx, Cart.jsx, Checkout.jsx, remove references from other files
+- [ ] Test the changes by running the app

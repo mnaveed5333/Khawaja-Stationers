@@ -7,9 +7,6 @@ import About from './pages/About';
 import Services from './pages/Services';
 import Products from './pages/Products';
 import ProductCategory from './pages/ProductCategory';
-import Cart from './pages/Cart';
-import Checkout from './pages/Checkout';
-
 import Contact from './pages/Contact';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
@@ -29,9 +26,6 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<Products />} />
           <Route path="/products/:slug" element={<ProductCategory />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
-
           <Route path="/services" element={<Services />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />

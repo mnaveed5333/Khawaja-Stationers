@@ -75,26 +75,56 @@ const Footer = () => {
               Our Branches
             </h4>
             <ul className="space-y-4">
-              <li className="flex items-start gap-3">
-                <FaMapMarkerAlt className="text-blue-400 mt-1" />
-                <span className="text-gray-400">
-                  <strong>Stadium Road Branch:</strong> Shop No. 5, St. No. 8, Stadium Road, Rawalpindi 46000<br />
-                  <strong>Phone:</strong> +92 345 5110345
-                </span>
+              <li className="flex flex-col gap-2">
+                <div className="flex items-start gap-3">
+                  <FaMapMarkerAlt className="text-blue-400 mt-1" />
+                  <span className="text-gray-400">
+                    <strong>Stadium Road Branch:</strong> Shop No. 5, St. No. 8, Stadium Road, Rawalpindi 46000<br />
+                    <strong>Phone:</strong> +92 345 5110345
+                  </span>
+                </div>
+                <a
+                  href="https://maps.app.goo.gl/Vc8tptv7upuzJGDs6"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-red-600 text-white px-3 py-1 rounded-lg font-semibold hover:bg-red-700 transition text-center text-sm"
+                >
+                  View Map
+                </a>
               </li>
-              <li className="flex items-start gap-3">
-                <FaMapMarkerAlt className="text-blue-400 mt-1" />
-                <span className="text-gray-400">
-                  <strong>Tulsa Road Branch:</strong> Shop No. 1, Main Tulsa Road, Main Tulsa, Rawalpindi<br />
-                  <strong>Phone:</strong> +92 300 5005364
-                </span>
+              <li className="flex flex-col gap-2">
+                <div className="flex items-start gap-3">
+                  <FaMapMarkerAlt className="text-blue-400 mt-1" />
+                  <span className="text-gray-400">
+                    <strong>Tulsa Road Branch:</strong> Shop No. 1, Main Tulsa Road, Main Tulsa, Rawalpindi<br />
+                    <strong>Phone:</strong> +92 300 5005364
+                  </span>
+                </div>
+                <a
+                  href="https://maps.app.goo.gl/eitApW6ECGJAZP66A"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-red-600 text-white px-3 py-1 rounded-lg font-semibold hover:bg-red-700 transition text-center text-sm"
+                >
+                  View Map
+                </a>
               </li>
-              <li className="flex items-start gap-3">
-                <FaMapMarkerAlt className="text-blue-400 mt-1" />
-                <span className="text-gray-400">
-                  <strong>Stadium Road Stamp Paper:</strong> Stadium Road, Rawalpindi<br />
-                  <strong>Phone:</strong> +92 345 5110345
-                </span>
+              <li className="flex flex-col gap-2">
+                <div className="flex items-start gap-3">
+                  <FaMapMarkerAlt className="text-blue-400 mt-1" />
+                  <span className="text-gray-400">
+                    <strong>Stadium Road Stamp Paper:</strong> Stadium Road, Rawalpindi<br />
+                    <strong>Phone:</strong> +92 345 5110345
+                  </span>
+                </div>
+                <a
+                  href="https://maps.app.goo.gl/oPH461R6erpW1FyA8"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-red-600 text-white px-3 py-1 rounded-lg font-semibold hover:bg-red-700 transition text-center text-sm"
+                >
+                  View Map
+                </a>
               </li>
             </ul>
           </div>
