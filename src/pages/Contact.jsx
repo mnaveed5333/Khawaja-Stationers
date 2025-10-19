@@ -274,7 +274,7 @@ const Contact = () => {
         {/* Header */}
         <div ref={headerRef} className="text-center mb-16">
           
-          <h1 className="contact-header text-3xl md:text-4xl font-bold mb-4" style={{ color: THEME.accent }}>
+          <h1 className="contact-header text-2xl md:text-3xl lg:text-4xl font-bold mb-4" style={{ color: THEME.accent }}>
             Get In Touch
           </h1>
           <div className="w-20 h-1 mx-auto mb-6 rounded-full" style={{ background: THEME.accent }}></div>

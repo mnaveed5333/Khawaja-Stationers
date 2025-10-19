@@ -300,7 +300,7 @@ const Products = () => {
       {/* Header Section */}
       <div className="container mx-auto px-4 py-12">
         <div ref={headerRef} className="text-center mb-16">
-          <h1 className="products-header text-5xl font-bold mb-6" style={{ color: THEME.accent }}>
+          <h1 className="products-header text-3xl md:text-4xl lg:text-5xl font-bold mb-6" style={{ color: THEME.accent }}>
             Our Products
           </h1>
         </div>
@@ -314,7 +314,7 @@ const Products = () => {
                 <div className="category-icon mb-4 flex justify-center" style={{ color: THEME.bg }}>
                   {category.icon}
                 </div>
-                <h3 className="text-3xl font-bold" style={{ color: THEME.bg }}>{category.name}</h3>
+                <h3 className="text-xl md:text-2xl lg:text-3xl font-bold" style={{ color: THEME.bg }}>{category.name}</h3>
               </div>
 
               {/* Category Products */}
@@ -364,10 +364,10 @@ const Products = () => {
 
         {/* Call to Action Section */}
         <div className="products-cta mt-20 text-center rounded-2xl p-12" style={{ background: THEME.accent }}>
-          <h2 className="text-4xl font-bold mb-6" style={{ color: THEME.bg }}>
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-6" style={{ color: THEME.bg }}>
             Need Something Specific?
           </h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto" style={{ color: THEME.surface }}>
+          <p className="text-base md:text-lg lg:text-xl mb-8 max-w-2xl mx-auto" style={{ color: THEME.surface }}>
             Can't find what you're looking for? Contact us and we'll help you find the perfect stationery supplies for your needs.
           </p>
           <Link

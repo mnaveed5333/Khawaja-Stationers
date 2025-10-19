@@ -41,10 +41,11 @@ const Navbar = () => {
               style={{ borderColor: THEME.accent }}
             />
             <span
-              className={`font-bold transition-all duration-500 ${isScrolled ? 'text-xl' : 'text-2xl'}`}
+              className={`font-bold transition-all duration-500 ${isScrolled ? 'text-lg sm:text-xl' : 'text-xl sm:text-2xl'}`}
               style={{ color: THEME.accent }}
             >
-              Khawaja Stationers
+              <span className="hidden sm:inline">Khawaja Stationers</span>
+              <span className="sm:hidden">Khawaja Books</span>
             </span>
           </Link>
 
@@ -123,6 +124,18 @@ const Navbar = () => {
                   {item.label}
                 </NavLink>
               ))}
+              {/* Mobile Contact Button */}
+              <Link
+                to="/contact"
+                onClick={() => setIsOpen(false)}
+                className="px-3 py-2 rounded-md text-base font-medium transition-all hover:translate-x-2 mt-2"
+                style={{
+                  background: THEME.accent,
+                  color: THEME.bg
+                }}
+              >
+                Contact
+              </Link>
             </div>
           </div>
         )}

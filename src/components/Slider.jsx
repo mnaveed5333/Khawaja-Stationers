@@ -323,7 +323,7 @@ const Slider = () => {
   return (
     <div
       ref={sliderRef}
-      className="relative w-full overflow-hidden mt-8 sm:mt-10 md:mt-12 lg:mt-16"
+      className="relative w-full overflow-hidden mt-15 sm:pt-10 md:mt-12 lg:mt-16"
       style={{
         background: THEME.surface,
         border: `1px solid ${THEME.border}`
@@ -337,7 +337,7 @@ const Slider = () => {
       aria-label="Product showcase"
     >
       {/* Slides container (responsive height) */}
-      <div className="relative h-64 sm:h-80 md:h-96 lg:h-[400px]">
+      <div className="relative h-56 sm:h-72 md:h-80 lg:h-96 xl:h-[400px]">
         {slides.map((slide, index) => {
           const isActive = index === currentSlide;
           // initial inline style ensures correct placement before animation
@@ -478,7 +478,7 @@ const Slider = () => {
                 </div>
 
                 {/* Content */}
-                <div className="relative z-10 flex items-center justify-center h-full px-4 py-6 sm:px-6 sm:py-8 md:px-8 md:py-10 lg:px-12 lg:py-12">
+                <div className="relative z-10 flex items-center justify-center h-full px-3 py-4 sm:px-4 sm:py-6 md:px-6 md:py-8 lg:px-8 lg:py-10 xl:px-12 xl:py-12">
                   <div className="text-center text-white max-w-4xl mx-auto">
 
                     {/* Icon */}
@@ -503,7 +503,7 @@ const Slider = () => {
 
                     {/* Title */}
                     <h2
-                      className="slide-title text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4"
+                      className="slide-title text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-3 sm:mb-4"
                       style={{ color: THEME.bg }}
                     >
                       {slide.title}
@@ -514,7 +514,7 @@ const Slider = () => {
                     {/* CTA */}
                     <Link
                       to={slide.link}
-                      className="slide-cta inline-block px-6 py-2 sm:px-8 sm:py-3 rounded-full font-semibold transition-transform text-sm sm:text-base"
+                      className="slide-cta inline-block px-4 py-2 sm:px-6 sm:py-3 md:px-8 md:py-3 rounded-full font-semibold transition-transform text-xs sm:text-sm md:text-base"
                       style={{
                         background: THEME.bg,
                         color: THEME.accent,

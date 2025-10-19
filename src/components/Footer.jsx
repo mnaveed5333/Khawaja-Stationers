@@ -105,7 +105,7 @@ const Footer = () => {
   return (
     <footer ref={footerRef} style={{ background: THEME.bg, color: THEME.text }} className="py-16 relative">
       <div className="container mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 mb-12">
           {/* Brand */}
           <div ref={brandRef}>
             <div className="flex items-center mb-6">
@@ -113,13 +113,14 @@ const Footer = () => {
                 <FaPaperPlane className="text-2xl" />
               </div>
               <div>
-                <h3 className="text-3xl font-bold" style={{ color: THEME.accent }}>
-                  Khawaja Stationers
+                <h3 className="text-2xl sm:text-3xl font-bold" style={{ color: THEME.accent }}>
+                  <span className="hidden sm:inline">Khawaja Stationers</span>
+                  <span className="sm:hidden">Khawaja Books</span>
                 </h3>
                 <div className="w-16 h-1 mt-2 rounded-full" style={{ background: THEME.accent }}></div>
               </div>
             </div>
-            <p className="text-lg mb-6" style={{ color: THEME.muted }}>
+            <p className="text-sm md:text-base lg:text-lg mb-6" style={{ color: THEME.muted }}>
               Quality stationery & professional printing since 1990.
             </p>
             <div className="flex space-x-4">
@@ -137,7 +138,7 @@ const Footer = () => {
 
           {/* Links */}
           <div ref={linksRef}>
-            <h4 className="text-xl font-bold mb-4">Quick Links</h4>
+            <h4 className="text-lg md:text-xl font-bold mb-4">Quick Links</h4>
             <ul className="space-y-3">
               <li><Link to="/" className="footer-link block py-2 px-3 rounded-md" style={{ background: THEME.surface, color: THEME.muted }}>Home</Link></li>
               <li><Link to="/about" className="footer-link block py-2 px-3 rounded-md" style={{ background: THEME.surface, color: THEME.muted }}>About</Link></li>
@@ -149,7 +150,7 @@ const Footer = () => {
 
           {/* Contact */}
           <div ref={contactRef}>
-            <h4 className="text-xl font-bold mb-4">Our Branches</h4>
+            <h4 className="text-lg md:text-xl font-bold mb-4">Our Branches</h4>
             <div className="space-y-4">
               <div className="location-card p-4 rounded-xl" style={{ background: THEME.surface }}>
                 <div className="flex gap-3 mb-3">
@@ -195,13 +196,13 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t pt-6 flex flex-col md:flex-row justify-between items-center text-sm" style={{ borderColor: THEME.border, color: THEME.muted }}>
-          <div className="flex items-center mb-4 md:mb-0">
-            Made with <FaHeart className="text-red-500 mx-1 animate-pulse" /> © 2025 Khawaja Stationers
+        <div className="border-t pt-6 flex flex-col sm:flex-row justify-between items-center text-xs sm:text-sm" style={{ borderColor: THEME.border, color: THEME.muted }}>
+          <div className="flex items-center mb-4 sm:mb-0">
+            Made with <FaHeart className="text-red-500 mx-1 animate-pulse" /> © 2025 <span className="hidden sm:inline">Khawaja Stationers</span><span className="sm:hidden">Khawaja Books</span>
           </div>
-          <div className="flex gap-4">
-            <div className="flex items-center"><FaPhone className="mr-2" style={{ color: THEME.accent }} />+92 340 5542097</div>
-            <div className="flex items-center"><FaMapMarkerAlt className="mr-2" style={{ color: THEME.accent }} />Rawalpindi, Pakistan</div>
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 text-center sm:text-left">
+            <div className="flex items-center justify-center sm:justify-start"><FaPhone className="mr-2" style={{ color: THEME.accent }} />+92 340 5542097</div>
+            <div className="flex items-center justify-center sm:justify-start"><FaMapMarkerAlt className="mr-2" style={{ color: THEME.accent }} />Rawalpindi, Pakistan</div>
           </div>
         </div>
       </div>

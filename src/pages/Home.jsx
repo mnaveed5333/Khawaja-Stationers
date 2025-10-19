@@ -592,12 +592,12 @@ const Home = () => {
           ref={welcomeRef}
           className="text-center max-w-4xl mx-auto mb-20"
         >
-          <h2 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
-            Welcome to <span className="text-[#06B6D4] bg-gradient-to-r from-[#06B6D4] to-[#0EA5E9] bg-clip-text text-transparent">Khawaja Stationers</span>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-6 leading-tight">
+            Welcome to <span className="text-[#06B6D4] bg-gradient-to-r from-[#06B6D4] to-[#0EA5E9] bg-clip-text text-transparent"><span className="hidden sm:inline">Khawaja Stationers</span><span className="sm:hidden">Khawaja Books</span></span>
           </h2>
-          <p className="text-xl text-[#A8B3BF] leading-relaxed mb-8">
-            Since <span className="font-semibold text-[#06B6D4]">1990</span>, we've been Rawalpindi's trusted 
-            <span className="font-semibold text-white"> one-stop shop</span> for quality stationery, professional printing, 
+          <p className="text-lg md:text-xl text-[#A8B3BF] leading-relaxed mb-8">
+            Since <span className="font-semibold text-[#06B6D4]">1990</span>, we've been Rawalpindi's trusted
+            <span className="font-semibold text-white"> one-stop shop</span> for quality stationery, professional printing,
             stamp paper services, and expert translation solutions. Three decades of excellence in serving our community.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -620,10 +620,10 @@ const Home = () => {
 
         {/* Services Section */}
         <section ref={servicesRef} className="mb-20">
-          <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-4">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-white mb-4">
             Our <span className="text-[#06B6D4]">Services</span>
           </h2>
-          <p className="text-lg text-[#A8B3BF] text-center mb-12 max-w-2xl mx-auto">
+          <p className="text-base md:text-lg text-[#A8B3BF] text-center mb-12 max-w-2xl mx-auto">
             Comprehensive solutions for all your stationery, printing, and documentation needs
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -670,7 +670,7 @@ const Home = () => {
             
             <div className="absolute inset-0 bg-black/10"></div>
             <div className="relative z-10">
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-12">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-12">
                 30+ Years of <span className="text-[#E9E5DC]">Excellence</span>
               </h2>
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
@@ -694,10 +694,10 @@ const Home = () => {
 
         {/* Testimonials */}
         <section ref={testimonialsRef} className="mb-20">
-          <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-4">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-white mb-4">
             What Our <span className="text-[#06B6D4]">Customers</span> Say
           </h2>
-          <p className="text-lg text-[#A8B3BF] text-center mb-12 max-w-2xl mx-auto">
+          <p className="text-base md:text-lg text-[#A8B3BF] text-center mb-12 max-w-2xl mx-auto">
             Trusted by thousands of satisfied customers across Pakistan and beyond
           </p>
           <div className="max-w-6xl mx-auto">
@@ -747,10 +747,10 @@ const Home = () => {
         >
           <div className="absolute inset-0 bg-black/10"></div>
           <div className="cta-content relative z-10">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
               Ready to Get Started?
             </h2>
-            <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed">
               Contact us today for stationery supplies, printing services, or any documentation needs. We're here to help!
             </p>
             <Link 

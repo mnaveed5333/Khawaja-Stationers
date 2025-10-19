@@ -516,7 +516,7 @@ const Services = () => {
       <div className="container mx-auto px-4 pb-20 relative z-10">
         {/* Header */}
         <div ref={headerRef} className="text-center mb-12">
-          <h1 className="text-3xl font-bold mb-3" style={{ color: THEME.accent }}>
+          <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-3" style={{ color: THEME.accent }}>
             Our Services
           </h1>
          
