@@ -19,14 +19,7 @@ function App() {
       <div className="App">
         <ScrollToTop />
         <Navbar />
-        <a
-          href="https://wa.me/923455110345"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="fixed bottom-7 right-7 z-50 hover:scale-110 transition-transform duration-300"
-        >
-          <FaWhatsapp className="text-green-500 text-[50px] hover:text-green-600" />
-        </a>
+        
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
