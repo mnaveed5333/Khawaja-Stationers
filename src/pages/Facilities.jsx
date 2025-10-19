@@ -1,11 +1,13 @@
 // pages/Facilities.jsx
-import React from "react";
-import { 
-  FaBook, 
-  FaBolt, 
-  FaTint, 
-  FaUsers, 
-  FaGamepad, 
+import React, { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import {
+  FaBook,
+  FaBolt,
+  FaTint,
+  FaUsers,
+  FaGamepad,
   FaDumbbell,
   FaFirstAid,
   FaBookOpen,
@@ -19,8 +21,17 @@ import {
   FaBroom,
   FaHome
 } from "react-icons/fa";
+import { THEME } from '../theme';
+
+// Register ScrollTrigger plugin
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const Facilities = () => {
+  const headerRef = useRef(null);
+  const facilitiesRef = useRef(null);
+
   // 12 additional hostel facilities with icons
   const facilities = [
     {
@@ -82,26 +93,113 @@ const Facilities = () => {
   ];
 
  
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Header animation
+      gsap.fromTo(".facilities-header",
+        {
+          y: 80,
+          opacity: 0,
+          scale: 0.9,
+          rotationX: -15
+        },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          rotationX: 0,
+          duration: 1.2,
+          ease: "power3.out"
+        }
+      );
+
+      // Facilities cards animation - wave effect
+      gsap.fromTo(".facility-card",
+        {
+          opacity: 0,
+          scale: 0.5,
+          rotation: -45,
+          filter: "blur(10px)",
+          transformOrigin: "center center"
+        },
+        {
+          opacity: 1,
+          scale: 1,
+          rotation: 0,
+          filter: "blur(0px)",
+          duration: 0.8,
+          stagger: {
+            amount: 1.2,
+            from: "start",
+            grid: [3, 3]
+          },
+          ease: "elastic.out(1, 0.4)",
+          scrollTrigger: {
+            trigger: facilitiesRef.current,
+            start: "top 75%",
+            toggleActions: "play none none reverse"
+          }
+        }
+      );
+
+      // Enhanced hover effects
+      gsap.utils.toArray(".facility-card").forEach(card => {
+        const hoverAnimation = gsap.to(card, {
+          y: -15,
+          scale: 1.05,
+          rotationY: 10,
+          boxShadow: `0 25px 50px rgba(6, 182, 212, 0.25)`,
+          duration: 0.4,
+          ease: "power2.out",
+          paused: true
+        });
+
+        card.addEventListener("mouseenter", () => {
+          hoverAnimation.play();
+          gsap.to(card.querySelector('.facility-icon'), {
+            scale: 1.2,
+            rotation: 10,
+            duration: 0.3,
+            ease: "back.out(1.5)"
+          });
+        });
+
+        card.addEventListener("mouseleave", () => {
+          hoverAnimation.reverse();
+          gsap.to(card.querySelector('.facility-icon'), {
+            scale: 1,
+            rotation: 0,
+            duration: 0.3,
+            ease: "power2.out"
+          });
+        });
+      });
+
+    });
+
+    return () => ctx.revert();
+  }, []);
+
   const getColorClasses = (color) => {
     switch(color) {
-      case "blue": return "bg-blue-900 text-blue-400";
-      case "yellow": return "bg-yellow-900 text-yellow-400";
-      case "purple": return "bg-purple-900 text-purple-400";
-      case "green": return "bg-green-900 text-green-400";
-      case "red": return "bg-red-900 text-red-400";
-      default: return "bg-gray-800 text-gray-400";
+      case "blue": return { bg: THEME.surface2, text: THEME.accent };
+      case "yellow": return { bg: THEME.surface2, text: "#FBBF24" };
+      case "purple": return { bg: THEME.surface2, text: "#A855F7" };
+      case "green": return { bg: THEME.surface2, text: "#10B981" };
+      case "red": return { bg: THEME.surface2, text: "#EF4444" };
+      default: return { bg: THEME.surface, text: THEME.muted };
     }
   };
 
   return (<div className="mt-5">
-    <div className="bg-gray-900 min-h-screen text-gray-100">
+    <div style={{ background: THEME.bg, minHeight: "100vh", color: THEME.text, paddingBottom: "200px" }}>
       <div className="container mx-auto px-6 py-16">
         {/* Title */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-4">
+        <div ref={headerRef} className="text-center mb-16">
+          <h1 className="facilities-header text-4xl font-bold mb-4" style={{ color: THEME.accent }}>
             Hostel Facilities & Amenities
           </h1>
-          <p className="text-lg text-gray-300 max-w-3xl mx-auto">
+          <p className="text-lg max-w-3xl mx-auto" style={{ color: THEME.muted }}>
             Beyond the basic amenities, we provide these extra facilities to make
             your stay more comfortable, productive, and enjoyable.
           </p>
@@ -110,22 +208,25 @@ const Facilities = () => {
       
 
         {/* Additional Facilities Grid */}
-        <section className="mb-20">
-          
+        <section ref={facilitiesRef} className="mb-20">
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {facilities.map((facility, index) => {
-              
+
               const colorClasses = getColorClasses(facility.color);
               return (
                 <div
                   key={index}
-                  className="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-blue-500 transition-all duration-300 group"
+                  className="facility-card rounded-xl p-6 transition-all duration-300"
+                  style={{ background: THEME.surface, border: `1px solid ${THEME.border}` }}
                 >
-                  
-                  <h3 className="text-xl font-semibold text-white text-center mb-3">
+                  <div className="facility-icon mb-4 flex justify-center">
+                    <facility.icon size={48} style={{ color: colorClasses.text }} />
+                  </div>
+                  <h3 className="text-xl font-semibold text-center mb-3" style={{ color: THEME.text }}>
                     {facility.title}
                   </h3>
-                  <p className="text-gray-300 text-sm text-center leading-relaxed">
+                  <p className="text-sm text-center leading-relaxed" style={{ color: THEME.muted }}>
                     {facility.description}
                   </p>
                 </div>

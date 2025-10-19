@@ -1,349 +1,553 @@
 // components/Slider.jsx
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback
+} from "react";
+import { Link } from "react-router-dom";
+import {
+  FaBook,
+  FaPenFancy,
+  FaPrint,
+  FaPalette,
+  FaRulerCombined,
+  FaFolderOpen,
+  FaFileAlt,
+  FaBriefcase,
+  FaTags,
+  FaMobileAlt,
+  FaGift
+} from "react-icons/fa";
+import gsap from "gsap";
+
+/* ===== Theme ===== */
+const THEME = {
+  bg: "#0B1220",
+  surface: "#0F1724",
+  surface2: "#111827",
+  text: "#F5F7FA",
+  muted: "#A8B3BF",
+  border: "#1F2A37",
+  paper: "#E9E5DC",
+  accent: "#06B6D4"
+};
 
 const Slider = () => {
-  // State management
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  
-  // Refs
-  const sliderRef = useRef(null);
-  const intervalRef = useRef(null);
-  const touchStartX = useRef(0);
-  const touchEndX = useRef(0);
-  
-  // Slides data
   const slides = [
     {
-      title: "📚 Premium Notebooks & Journals",
-      description: "High-quality notebooks for students and professionals. Perfect for note-taking, journaling, and creative writing.",
+      title: "Premium Notebooks & Journals",
+      description:
+        "High-quality notebooks for students and professionals. Perfect for note-taking, journaling, and creative writing.",
       bgColor: "from-blue-600 to-purple-700",
-      icon: "📚",
+      icon: <FaBook />,
       link: "/products/notebooks-journals",
       isVip: false
     },
     {
-      title: "✏️ Writing Instruments Collection",
-      description: "Pens, pencils, markers, and highlighters from top brands. Find the perfect writing tool for every need.",
+      title: "Writing Instruments Collection",
+      description:
+        "Pens, pencils, markers, and highlighters from top brands. Find the perfect writing tool for every need.",
       bgColor: "from-green-600 to-teal-700",
-      icon: "✏️",
+      icon: <FaPenFancy />,
       link: "/products/writing-instruments",
       isVip: false
     },
     {
-      title: "📋 Office Supplies Essentials",
-      description: "Complete range of office supplies including staplers, paper clips, folders, and organizers.",
-      bgColor: "from-orange-600 to-red-700",
-      icon: "📋",
-      link: "/products/office-supplies",
-      isVip: false
-    },
-    {
-      title: "🎨 Art & Craft Materials",
-      description: "Unleash your creativity with our extensive collection of art supplies, paints, brushes, and craft materials.",
+      title: "Art & Craft Materials",
+      description:
+        "Unleash your creativity with paints, brushes, and craft materials.",
       bgColor: "from-pink-600 to-rose-700",
-      icon: "🎨",
+      icon: <FaPalette />,
       link: "/products/art-craft",
       isVip: false
-    },
-    {
-      title: "📐 Geometry & Drawing Tools",
-      description: "Precision instruments for technical drawing, geometry sets, rulers, and measuring tools.",
-      bgColor: "from-indigo-600 to-blue-700",
-      icon: "📐",
-      link: "/products/geometry-tools",
-      isVip: false
-    },
-    {
-      title: "🗂️ File Organization Solutions",
-      description: "Keep your documents organized with our filing systems, binders, and storage solutions.",
-      bgColor: "from-gray-600 to-slate-700",
-      icon: "🗂️",
-      link: "/products/file-organization",
-      isVip: false
-    },
-    {
-      title: "🖨️ Printing & Paper Products",
-      description: "High-quality printing paper, photo paper, and specialty papers for all your printing needs.",
-      bgColor: "from-cyan-600 to-blue-700",
-      icon: "🖨️",
-      link: "/products/paper-products",
-      isVip: false
-    },
-    {
-      title: "🎒 School & College Supplies",
-      description: "Everything students need for success - from basic supplies to specialized academic materials.",
-      bgColor: "from-yellow-600 to-orange-700",
-      icon: "🎒",
-      link: "/products/school-supplies",
-      isVip: false
-    },
-    {
-      title: "💼 Professional Business Supplies",
-      description: "Elevate your professional image with premium business cards, letterheads, and presentation materials.",
-      bgColor: "from-emerald-600 to-green-700",
-      icon: "💼",
-      link: "/services/business-supplies",
-      isVip: true
-    },
-    {
-      title: "🏷️ Labels & Stickers Collection",
-      description: "Organize and identify with our wide range of labels, stickers, and marking solutions.",
-      bgColor: "from-violet-600 to-purple-700",
-      icon: "🏷️",
-      link: "/products/labels-stickers",
-      isVip: false
-    },
-    {
-      title: "📱 Digital Accessories",
-      description: "Modern stationary meets technology - styluses, tablet cases, and digital organization tools.",
-      bgColor: "from-slate-600 to-gray-700",
-      icon: "📱",
-      link: "/products/digital-accessories",
-      isVip: true
-    },
-    {
-      title: "🎁 Gift Sets & Bundles",
-      description: "Perfect gift combinations for students, professionals, and stationary enthusiasts.",
-      bgColor: "from-red-600 to-pink-700",
-      icon: "🎁",
-      link: "/products/gift-sets",
-      isVip: true
     }
   ];
-  
-  // Auto-play functionality
+
+  // state + refs
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  const sliderRef = useRef(null);
+  const slideRefs = useRef([]);
+  const intervalRef = useRef(null);
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
+  const progressRef = useRef(null);
+  const prevSlide = useRef(0);
+  const rotateMs = 3000; // 3 seconds as requested
+
+  // helpers to (re)start autoplay
+  const clearAuto = () => {
+    if (intervalRef.current) clearTimeout(intervalRef.current);
+  };
+
   const startAutoPlay = useCallback(() => {
+    clearAuto();
     if (!isPaused && !isTransitioning) {
       intervalRef.current = setTimeout(() => {
-        setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-      }, 5000);
+        goToNext();
+      }, rotateMs);
     }
-  }, [isPaused, isTransitioning, slides.length]);
-  
-  // Initialize and cleanup
-  useEffect(() => {
-    startAutoPlay();
-    return () => clearTimeout(intervalRef.current);
-  }, [currentSlide, startAutoPlay]);
-  
-  // Navigation functions
-  const goToSlide = useCallback((index) => {
-    if (index !== currentSlide && !isTransitioning) {
-      setIsTransitioning(true);
-      setCurrentSlide(index);
-      setTimeout(() => setIsTransitioning(false), 500);
-    }
+  }, [isPaused, isTransitioning]);
+
+  // navigation
+  const goTo = useCallback((index) => {
+    if (index === currentSlide || isTransitioning) return;
+    setIsTransitioning(true);
+    setCurrentSlide(index);
+    setTimeout(() => setIsTransitioning(false), 520);
   }, [currentSlide, isTransitioning]);
-  
+
   const goToPrev = useCallback(() => {
-    if (!isTransitioning) {
-      setIsTransitioning(true);
-      setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
-      setTimeout(() => setIsTransitioning(false), 500);
-    }
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+    setTimeout(() => setIsTransitioning(false), 520);
   }, [isTransitioning, slides.length]);
-  
+
   const goToNext = useCallback(() => {
-    if (!isTransitioning) {
-      setIsTransitioning(true);
-      setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-      setTimeout(() => setIsTransitioning(false), 500);
-    }
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+    setTimeout(() => setIsTransitioning(false), 520);
   }, [isTransitioning, slides.length]);
-  
-  // Touch handlers
+
+  // touch handlers
   const handleTouchStart = useCallback((e) => {
     touchStartX.current = e.touches[0].clientX;
     setIsPaused(true);
+    clearAuto();
   }, []);
-  
-  const handleTouchEnd = useCallback((e) => {
-    touchEndX.current = e.changedTouches[0].clientX;
-    setIsPaused(false);
-    handleSwipe();
-  }, []);
-  
-  const handleSwipe = useCallback(() => {
-    const swipeThreshold = 50;
-    const diff = touchStartX.current - touchEndX.current;
-    
-    if (Math.abs(diff) > swipeThreshold) {
-      if (diff > 0) {
-        goToNext();
-      } else {
-        goToPrev();
+
+  const handleTouchEnd = useCallback(
+    (e) => {
+      touchEndX.current = e.changedTouches[0].clientX;
+      setIsPaused(false);
+      const diff = touchStartX.current - touchEndX.current;
+      const threshold = 50;
+      if (Math.abs(diff) > threshold) {
+        if (diff > 0) goToNext();
+        else goToPrev();
       }
-    }
-  }, [goToNext, goToPrev]);
-  
-  // Mouse handlers
-  const handleMouseEnter = useCallback(() => setIsPaused(true), []);
-  const handleMouseLeave = useCallback(() => setIsPaused(false), []);
-  
-  // Keyboard navigation
-  const handleKeyDown = useCallback((e) => {
-    if (e.key === 'ArrowLeft') {
-      goToPrev();
-    } else if (e.key === 'ArrowRight') {
-      goToNext();
-    }
-  }, [goToPrev, goToNext]);
-  
-  // Set up keyboard event listeners
+      startAutoPlay();
+    },
+    [goToNext, goToPrev, startAutoPlay]
+  );
+
+  // mouse enter/leave
+  const handleMouseEnter = useCallback(() => {
+    setIsPaused(true);
+    clearAuto();
+  }, []);
+  const handleMouseLeave = useCallback(() => {
+    setIsPaused(false);
+    startAutoPlay();
+  }, [startAutoPlay]);
+
+  // keyboard navigation
+  const handleKeyDown = useCallback(
+    (e) => {
+      if (e.key === "ArrowLeft") goToPrev();
+      else if (e.key === "ArrowRight") goToNext();
+    },
+    [goToPrev, goToNext]
+  );
+
   useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
-  
-  // Calculate progress bar width
-  const progressWidth = ((currentSlide + 1) / slides.length) * 100;
-  
+
+  // autoplay effect
+  useEffect(() => {
+    startAutoPlay();
+    return () => clearAuto();
+  }, [currentSlide, startAutoPlay]);
+
+  // Entrance animation on mount
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const firstSlide = slideRefs.current[0];
+      if (!firstSlide) return;
+
+      const tl = gsap.timeline();
+      tl.set(firstSlide, { zIndex: 20, pointerEvents: "auto" })
+        .fromTo(firstSlide,
+          { scale: 0.8, rotationY: -90, opacity: 0 },
+          { scale: 1, rotationY: 0, opacity: 1, duration: 1.5, ease: "back.out(1.7)" }
+        )
+        .fromTo(firstSlide.querySelector(".slide-icon"),
+          { scale: 0, rotation: -180, y: -50 },
+          { scale: 1, rotation: 0, y: 0, duration: 1.2, ease: "elastic.out(1,0.5)" },
+          "-=1"
+        )
+        .fromTo([firstSlide.querySelector(".slide-title"), firstSlide.querySelector(".slide-cta")],
+          { y: 50, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, stagger: 0.3, ease: "power3.out" },
+          "-=0.8"
+        );
+
+      // Animate bubbles on mount
+      const bubbles = firstSlide.querySelectorAll(".bubble");
+      bubbles.forEach((bubble, i) => {
+        gsap.fromTo(bubble,
+          { scale: 0, opacity: 0 },
+          { scale: 1, opacity: 0.15, duration: 1, delay: i * 0.2, ease: "back.out(1.7)" }
+        );
+      });
+
+      // Start continuous bubble animation
+      gsap.to(bubbles, {
+        y: "-=20",
+        rotation: 360,
+        opacity: 0.3,
+        duration: 6,
+        ease: "none",
+        stagger: 1,
+        repeat: -1,
+        yoyo: true
+      });
+    }, sliderRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  // GSAP animations when slide changes
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const incomingEl = slideRefs.current[currentSlide];
+      const outgoingEl = slideRefs.current[prevSlide.current];
+
+      // guard
+      if (!incomingEl) return;
+
+      const tl = gsap.timeline();
+
+      // animate outgoing with 3D flip
+      if (outgoingEl && outgoingEl !== incomingEl) {
+        tl.to(outgoingEl, {
+          rotationY: -90,
+          scale: 0.9,
+          opacity: 0,
+          duration: 0.8,
+          ease: "power2.inOut"
+        });
+      }
+
+      // prepare incoming
+      tl.set(incomingEl, { zIndex: 20, pointerEvents: "auto", rotationY: 90, scale: 0.9, opacity: 0 });
+
+      // incoming 3D flip animation
+      tl.to(incomingEl, {
+        rotationY: 0,
+        scale: 1,
+        opacity: 1,
+        duration: 1.2,
+        ease: "back.out(1.7)"
+      });
+
+      // icon with glow
+      const icon = incomingEl.querySelector(".slide-icon");
+      if (icon) {
+        tl.fromTo(icon,
+          { scale: 0, rotation: -180, boxShadow: "0 0 0 rgba(6,182,212,0)" },
+          {
+            scale: 1,
+            rotation: 0,
+            boxShadow: "0 0 30px rgba(6,182,212,0.5)",
+            duration: 1.5,
+            ease: "elastic.out(1,0.3)"
+          },
+          "-=1"
+        );
+      }
+
+      // content with bounce and stagger
+      const title = incomingEl.querySelector(".slide-title");
+      const cta = incomingEl.querySelector(".slide-cta");
+      tl.fromTo([title, cta],
+        { y: 50, opacity: 0, scale: 0.8 },
+        { y: 0, opacity: 1, scale: 1, duration: 0.8, stagger: 0.3, ease: "bounce.out" },
+        "-=1"
+      );
+
+      // CTA pulse effect
+      tl.to(cta, {
+        scale: 1.05,
+        duration: 0.6,
+        ease: "power2.inOut",
+        repeat: -1,
+        yoyo: true
+      }, "-=0.5");
+
+      // animate progress bar with wave effect
+      const pct = ((currentSlide + 1) / slides.length) * 100;
+      if (progressRef.current) {
+        tl.to(progressRef.current, {
+          width: `${pct}%`,
+          duration: 0.8,
+          ease: "power1.out"
+        }, "-=1.2");
+      }
+
+      // background gradient shift
+      const bg = incomingEl.querySelector(".w-full.h-full.relative");
+      if (bg) {
+        tl.fromTo(bg,
+          { background: THEME.surface },
+          { background: THEME.accent, duration: 1, ease: "power2.inOut" },
+          "-=1.5"
+        );
+      }
+
+      // de-emphasize previous after a tick
+      if (outgoingEl && outgoingEl !== incomingEl) {
+        tl.set(outgoingEl, { zIndex: 10, pointerEvents: "none" }, "+=0.5");
+      }
+    }, sliderRef);
+
+    prevSlide.current = currentSlide;
+    return () => ctx.revert();
+  }, [currentSlide, slides.length]);
+
+  // helper to set slide refs
+  const setSlideRef = (el, i) => {
+    slideRefs.current[i] = el;
+  };
+
+  // progress width for initial render
+  const initialProgress = ((currentSlide + 1) / slides.length) * 100;
+
   return (
     <div
-      className="relative w-full max-w-6xl mx-auto overflow-hidden mt-8 rounded-2xl shadow-2xl"
+      ref={sliderRef}
+      className="relative w-full overflow-hidden mt-8 sm:mt-10 md:mt-12 lg:mt-16"
+      style={{
+        background: THEME.surface,
+        border: `1px solid ${THEME.border}`
+      }}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      ref={sliderRef}
       role="region"
       aria-roledescription="carousel"
       aria-label="Product showcase"
     >
-      {/* Main slider container */}
-      <div className="relative h-96 md:h-[28rem]">
-        {slides.map((slide, index) => (
-          <div
-            key={index}
-            className={`absolute inset-0 transition-all duration-500 ease-in-out transform ${
-              index === currentSlide 
-                ? 'opacity-100 translate-x-0 scale-100' 
-                : index < currentSlide 
-                  ? 'opacity-0 -translate-x-full scale-95' 
-                  : 'opacity-0 translate-x-full scale-95'
-            }`}
-            role="tabpanel"
-            aria-hidden={index !== currentSlide}
-            aria-label={`Slide ${index + 1}`}
-          >
-            {/* Gradient background */}
-            <div className={`w-full h-full bg-gradient-to-br ${slide.bgColor} relative overflow-hidden`}>
-              {/* Animated background pattern */}
-              <div className="absolute inset-0 opacity-10">
-                <div className="absolute top-10 left-10 w-32 h-32 bg-white rounded-full animate-pulse"></div>
-                <div className="absolute bottom-20 right-20 w-24 h-24 bg-white rounded-full animate-bounce"></div>
-                <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-white rounded-full animate-ping"></div>
-              </div>
-              
-              {/* Content */}
-              <div className="relative z-10 flex items-center justify-center h-full p-8">
-                <div className="text-center text-white max-w-4xl">
-                  {/* VIP Badge */}
-                  {slide.isVip && (
-                    <div 
-                      className="absolute top-4 left-4 bg-yellow-400 text-black px-3 py-1 rounded-full text-sm font-bold animate-pulse"
-                      aria-label="VIP Exclusive"
-                    >
-                      VIP
-                    </div>
-                  )}
+      {/* Slides container (responsive height) */}
+      <div className="relative h-64 sm:h-80 md:h-96 lg:h-[400px]">
+        {slides.map((slide, index) => {
+          const isActive = index === currentSlide;
+          // initial inline style ensures correct placement before animation
+          const initialStyle = {
+            opacity: isActive ? 1 : 0,
+            transform: isActive ? "translateX(0) scale(1)" : index < currentSlide ? "translateX(-100%) scale(.95)" : "translateX(100%) scale(.95)"
+          };
 
-                  {/* Large icon with animation */}
-                  <div className="text-8xl mb-6 animate-bounce" aria-hidden="true">
-                    {slide.icon}
-                  </div>
-
-                  {/* Title with slide-in animation */}
-                  <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight animate-fade-in-up">
-                    {slide.title}
-                  </h2>
-
-                  {/* Description with delayed slide-in */}
-                  <p className="text-xl md:text-2xl opacity-90 leading-relaxed animate-fade-in-up-delay">
-                    {slide.description}
-                  </p>
-
-                  {/* Call to action button */}
-                  <Link
-                    to={slide.link}
-                    className="mt-8 inline-block px-8 py-4 bg-white bg-opacity-20 backdrop-blur-sm text-white font-semibold rounded-full hover:bg-opacity-30 transition-all duration-300 transform hover:scale-105 animate-fade-in-up-delay-2"
-                    aria-label={`Explore ${slide.title}`}
-                  >
-                    Explore Collection
-                  </Link>
-                </div>
-              </div>
-              
-              {/* Slide number indicator */}
-              <div 
-                className="absolute top-6 right-6 bg-black bg-opacity-30 text-white px-4 py-2 rounded-full text-sm font-medium"
-                aria-label={`Slide ${index + 1} of ${slides.length}`}
+          return (
+            <div
+              key={index}
+              ref={(el) => setSlideRef(el, index)}
+              className={`absolute inset-0`}
+              style={{
+                ...initialStyle,
+                transition: "none" // handled by GSAP
+              }}
+              role="tabpanel"
+              aria-hidden={!isActive}
+              aria-label={`Slide ${index + 1}`}
+            >
+              {/* Solid accent background */}
+              <div
+                className="w-full h-full relative overflow-hidden"
+                style={{
+                  minHeight: "100%",
+                  background: THEME.accent
+                }}
               >
-                {index + 1} / {slides.length}
+                {/* Floating bubbles */}
+                <div
+                  aria-hidden="true"
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    pointerEvents: "none",
+                    opacity: 0.15
+                  }}
+                >
+                  <div
+                    className="bubble"
+                    style={{
+                      position: "absolute",
+                      top: "10%",
+                      left: "20%",
+                      width: 60,
+                      height: 60,
+                      borderRadius: "50%",
+                      background: THEME.bg
+                    }}
+                  />
+                  <div
+                    className="bubble"
+                    style={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "70%",
+                      width: 40,
+                      height: 40,
+                      borderRadius: "50%",
+                      background: THEME.surface
+                    }}
+                  />
+                  <div
+                    className="bubble"
+                    style={{
+                      position: "absolute",
+                      top: "80%",
+                      left: "10%",
+                      width: 80,
+                      height: 80,
+                      borderRadius: "50%",
+                      background: THEME.bg
+                    }}
+                  />
+                  <div
+                    className="bubble"
+                    style={{
+                      position: "absolute",
+                      top: "30%",
+                      left: "80%",
+                      width: 50,
+                      height: 50,
+                      borderRadius: "50%",
+                      background: THEME.surface
+                    }}
+                  />
+                  <div
+                    className="bubble"
+                    style={{
+                      position: "absolute",
+                      top: "60%",
+                      left: "40%",
+                      width: 70,
+                      height: 70,
+                      borderRadius: "50%",
+                      background: THEME.bg
+                    }}
+                  />
+                </div>
+
+                {/* subtle decorative shapes (animated via CSS/gSAP) */}
+                <div
+                  aria-hidden="true"
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    pointerEvents: "none",
+                    opacity: 0.08
+                  }}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 28,
+                      left: 28,
+                      width: 120,
+                      height: 120,
+                      borderRadius: "999px",
+                      background: THEME.paper,
+                      mixBlendMode: "overlay",
+                      filter: "blur(18px)"
+                    }}
+                  />
+                  <div
+                    style={{
+                      position: "absolute",
+                      bottom: 44,
+                      right: 44,
+                      width: 84,
+                      height: 84,
+                      borderRadius: "999px",
+                      background: "#ffffff",
+                      mixBlendMode: "overlay",
+                      filter: "blur(8px)"
+                    }}
+                  />
+                </div>
+
+                {/* Content */}
+                <div className="relative z-10 flex items-center justify-center h-full px-4 py-6 sm:px-6 sm:py-8 md:px-8 md:py-10 lg:px-12 lg:py-12">
+                  <div className="text-center text-white max-w-4xl mx-auto">
+
+                    {/* Icon */}
+                    <div
+                      className="slide-icon mb-4 sm:mb-6"
+                      style={{
+                        fontSize: "clamp(48px, 8vw, 64px)",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: "clamp(80px, 15vw, 120px)",
+                        height: "clamp(80px, 15vw, 120px)",
+                        borderRadius: 20,
+                        background: THEME.bg,
+                        color: THEME.accent,
+                        margin: "0 auto"
+                      }}
+                      aria-hidden="true"
+                    >
+                      {React.cloneElement(slide.icon, { size: "clamp(32px, 6vw, 44px)" })}
+                    </div>
+
+                    {/* Title */}
+                    <h2
+                      className="slide-title text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4"
+                      style={{ color: THEME.bg }}
+                    >
+                      {slide.title}
+                    </h2>
+
+
+
+                    {/* CTA */}
+                    <Link
+                      to={slide.link}
+                      className="slide-cta inline-block px-6 py-2 sm:px-8 sm:py-3 rounded-full font-semibold transition-transform text-sm sm:text-base"
+                      style={{
+                        background: THEME.bg,
+                        color: THEME.accent,
+                        boxShadow: "0 10px 30px rgba(11,18,32,0.3)"
+                      }}
+                      aria-label={`Explore ${slide.title}`}
+                    >
+                      Explore Collection
+                    </Link>
+                  </div>
+                </div>
+
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
-      
-      {/* Navigation arrows */}
-      <button
-        onClick={goToPrev}
-        className="absolute left-6 top-1/2 transform -translate-y-1/2 z-30 bg-white/20 backdrop-blur-sm text-white p-5 rounded-full hover:bg-white/30 transition-all duration-300 shadow-xl hover:scale-110 focus:outline-none focus:ring-4 focus:ring-white/30 disabled:opacity-50 disabled:cursor-not-allowed"
-        aria-label="Previous slide"
-        disabled={isTransitioning}
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
 
-      <button
-        onClick={goToNext}
-        className="absolute right-6 top-1/2 transform -translate-y-1/2 z-30 bg-white/20 backdrop-blur-sm text-white p-5 rounded-full hover:bg-white/30 transition-all duration-300 shadow-xl hover:scale-110 focus:outline-none focus:ring-4 focus:ring-white/30 disabled:opacity-50 disabled:cursor-not-allowed"
-        aria-label="Next slide"
-        disabled={isTransitioning}
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-        </svg>
-      </button>
-      
-      {/* Indicators */}
-      <div 
-        className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-30 flex space-x-3"
-        role="tablist"
-      >
-        {slides.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => goToSlide(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
-              index === currentSlide 
-                ? 'bg-white scale-125 shadow-lg' 
-                : 'bg-white bg-opacity-50 hover:bg-opacity-75'
-            }`}
-            aria-label={`Go to slide ${index + 1}`}
-            aria-selected={index === currentSlide}
-            role="tab"
-            disabled={isTransitioning}
-          />
-        ))}
-      </div>
-      
+
       {/* Progress bar */}
-      <div className="absolute bottom-0 left-0 w-full h-1 bg-black bg-opacity-20">
-        <div 
-          className="h-full bg-white transition-all duration-300 shadow-sm"
-          style={{ width: `${progressWidth}%` }}
+      <div className="absolute bottom-0 left-0 w-full h-1" style={{ background: "rgba(0,0,0,0.25)" }}>
+        <div
+          ref={progressRef}
+          className="h-full"
+          style={{
+            width: `${initialProgress}%`,
+            background: `linear-gradient(90deg, ${THEME.accent}, ${THEME.paper})`
+          }}
           role="progressbar"
-          aria-valuenow={progressWidth}
+          aria-valuenow={initialProgress}
           aria-valuemin={0}
           aria-valuemax={100}
-        ></div>
+        />
       </div>
     </div>
   );

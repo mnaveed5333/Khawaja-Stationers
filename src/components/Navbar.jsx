@@ -1,83 +1,92 @@
-// components/Navbar.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, Link } from 'react-router-dom';
+import { THEME } from '../theme';
+
+const navItems = [
+  { to: '/', label: 'Home' },
+  { to: '/services', label: 'Services' },
+  { to: '/products', label: 'Products' },
+  { to: '/about', label: 'About' },
+];
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      setIsScrolled(scrollTop > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <nav className="bg-gray-900 fixed top-0 w-full z-50">
+    <nav
+      className={`fixed top-0 w-full z-50 transition-all duration-500 ${isScrolled ? 'bg-opacity-95 backdrop-blur-lg shadow-2xl' : 'bg-opacity-90 backdrop-blur-sm'}`}
+      style={{
+        background: isScrolled ? `${THEME.bg}F2` : `${THEME.bg}E6`,
+        borderBottom: isScrolled ? `1px solid ${THEME.border}` : 'none'
+      }}
+    >
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center py-4">
+        <div className={`flex justify-between items-center transition-all duration-500 ${isScrolled ? 'py-3' : 'py-4'}`}>
           <Link to="/" className="flex items-center space-x-3">
             <img
               src="/WhatsApp Image 2025-09-28 at 12.49.36_cd21fb96.jpg"
-              alt="Khawaja Stationers and Stamp Chamber Logo"
-              className="h-12 w-12 rounded-full object-cover border-2 border-blue-400"
+              alt="Khawaja Stationers Logo"
+              className={`rounded-full object-cover border-2 transition-all duration-500 ${isScrolled ? 'h-10 w-10' : 'h-12 w-12'}`}
+              style={{ borderColor: THEME.accent }}
             />
-            <span className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-green-500 bg-clip-text text-transparent">
-              Khawaja Stationers and Stamp Chamber
+            <span
+              className={`font-bold transition-all duration-500 ${isScrolled ? 'text-xl' : 'text-2xl'}`}
+              style={{ color: THEME.accent }}
+            >
+              Khawaja Stationers
             </span>
           </Link>
 
           {/* Desktop menu */}
-          <div className="hidden md:flex space-x-6">
-            <NavLink
-              to="/"
-              className={({ isActive }) =>
-                isActive
-                  ? "px-3 py-2 rounded-md text-sm font-medium bg-gray-800 text-white transition-all"
-                  : "px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800 transition-all"
-              }
-            >
-              Home
-            </NavLink>
-            <NavLink
-              to="/products"
-              className={({ isActive }) =>
-                isActive
-                  ? "px-3 py-2 rounded-md text-sm font-medium bg-gray-800 text-white transition-all"
-                  : "px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800 transition-all"
-              }
-            >
-              Products
-            </NavLink>
-            <NavLink
-              to="/services"
-              className={({ isActive }) =>
-                isActive
-                  ? "px-3 py-2 rounded-md text-sm font-medium bg-gray-800 text-white transition-all"
-                  : "px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800 transition-all"
-              }
-            >
-              Services
-            </NavLink>
-            <NavLink
-              to="/about"
-              className={({ isActive }) =>
-                isActive
-                  ? "px-3 py-2 rounded-md text-sm font-medium bg-gray-800 text-white transition-all"
-                  : "px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800 transition-all"
-              }
-            >
-              About
-            </NavLink>
-            <NavLink
+          <div className="hidden md:flex items-center space-x-6">
+            {navItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  `px-3 py-2 rounded-md text-sm font-medium transition-all ${isActive ? 'scale-105' : 'hover:scale-105'}`
+                }
+                style={({ isActive }) => ({
+                  background: isActive ? THEME.accent : 'transparent',
+                  color: isActive ? THEME.bg : THEME.text
+                })}
+              >
+                {item.label}
+              </NavLink>
+            ))}
+          </div>
+
+          {/* Desktop - CTA (optional) */}
+          <div className="hidden md:flex items-center space-x-3">
+            <Link
               to="/contact"
-              className={({ isActive }) =>
-                isActive
-                  ? "px-3 py-2 rounded-md text-sm font-medium bg-blue-700 text-white transition-all"
-                  : "px-3 py-2 rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition-all"
-              }
+              className="px-4 py-2 rounded-md font-semibold transition-transform"
+              style={{
+                background: THEME.accent,
+                color: THEME.bg
+              }}
             >
               Contact
-            </NavLink>
+            </Link>
           </div>
 
           {/* Mobile menu button */}
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
+              aria-expanded={isOpen}
+              aria-label="Toggle menu"
               className="text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white p-2 rounded-md"
             >
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -93,63 +102,27 @@ const Navbar = () => {
 
         {/* Mobile menu */}
         {isOpen && (
-          <div className="md:hidden pb-4 bg-gray-800 rounded-lg mt-2">
+          <div
+            className="md:hidden pb-4 rounded-lg mt-2 transition-all duration-300"
+            style={{ background: THEME.surface, border: `1px solid ${THEME.border}` }}
+          >
             <div className="flex flex-col space-y-1 px-2 pt-2">
-              <NavLink
-                to="/"
-                onClick={() => setIsOpen(false)}
-                className={({ isActive }) =>
-                  isActive
-                    ? "px-3 py-2 rounded-md text-base font-medium bg-gray-700 text-white"
-                    : "px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700"
-                }
-              >
-                Home
-              </NavLink>
-              <NavLink
-                to="/products"
-                onClick={() => setIsOpen(false)}
-                className={({ isActive }) =>
-                  isActive
-                    ? "px-3 py-2 rounded-md text-base font-medium bg-gray-700 text-white"
-                    : "px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700"
-                }
-              >
-                Products
-              </NavLink>
-              <NavLink
-                to="/services"
-                onClick={() => setIsOpen(false)}
-                className={({ isActive }) =>
-                  isActive
-                    ? "px-3 py-2 rounded-md text-base font-medium bg-gray-700 text-white"
-                    : "px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700"
-                }
-              >
-                Services
-              </NavLink>
-              <NavLink
-                to="/about"
-                onClick={() => setIsOpen(false)}
-                className={({ isActive }) =>
-                  isActive
-                    ? "px-3 py-2 rounded-md text-base font-medium bg-gray-700 text-white"
-                    : "px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700"
-                }
-              >
-                About
-              </NavLink>
-              <NavLink
-                to="/contact"
-                onClick={() => setIsOpen(false)}
-                className={({ isActive }) =>
-                  isActive
-                    ? "px-3 py-2 rounded-md text-base font-medium bg-blue-700 text-white"
-                    : "px-3 py-2 rounded-md text-base font-medium text-white bg-blue-600 hover:bg-blue-700"
-                }
-              >
-                Contact
-              </NavLink>
+              {navItems.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  onClick={() => setIsOpen(false)}
+                  className={({ isActive }) =>
+                    `px-3 py-2 rounded-md text-base font-medium transition-all ${isActive ? '' : 'hover:translate-x-2'}`
+                  }
+                  style={({ isActive }) => ({
+                    background: isActive ? THEME.accent : 'transparent',
+                    color: isActive ? THEME.bg : THEME.text
+                  })}
+                >
+                  {item.label}
+                </NavLink>
+              ))}
             </div>
           </div>
         )}

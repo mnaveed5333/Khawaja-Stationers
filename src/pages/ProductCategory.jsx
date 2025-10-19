@@ -1,14 +1,25 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FaArrowLeft, FaStar } from 'react-icons/fa';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { FaArrowLeft, FaStar, FaWhatsapp, FaBook, FaPen, FaClipboard, FaPalette, FaSchool, FaFileAlt } from 'react-icons/fa';
+import { THEME } from '../theme';
+
+// Register ScrollTrigger plugin
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const ProductCategory = () => {
   const { slug } = useParams();
+  const headerRef = useRef(null);
+  const productsRef = useRef(null);
+  const ctaRef = useRef(null);
 
   const categoryData = {
     "notebooks-journals": {
       name: "Notebooks & Journals",
-      icon: "📚",
+      icon: <FaBook size={40} />,
       description: "Premium quality notebooks, journals, and diaries for all your writing needs.",
       bgColor: "from-blue-500 to-purple-600",
       products: [
@@ -32,7 +43,7 @@ const ProductCategory = () => {
     },
     "writing-instruments": {
       name: "Writing Instruments",
-      icon: "✏️",
+      icon: <FaPen size={40} />,
       description: "Complete collection of pens, pencils, markers, and highlighters.",
       bgColor: "from-green-500 to-teal-600",
       products: [
@@ -56,7 +67,7 @@ const ProductCategory = () => {
     },
     "office-supplies": {
       name: "Office Supplies",
-      icon: "📋",
+      icon: <FaClipboard size={40} />,
       description: "Essential office supplies for professional and personal use.",
       bgColor: "from-orange-500 to-red-600",
       products: [
@@ -80,7 +91,7 @@ const ProductCategory = () => {
     },
     "art-craft": {
       name: "Art & Craft",
-      icon: "🎨",
+      icon: <FaPalette size={40} />,
       description: "Creative supplies for artists and craft enthusiasts.",
       bgColor: "from-pink-500 to-rose-600",
       products: [
@@ -104,7 +115,7 @@ const ProductCategory = () => {
     },
     "school-supplies": {
       name: "School Supplies",
-      icon: "🎒",
+      icon: <FaSchool size={40} />,
       description: "Everything students need for academic success.",
       bgColor: "from-indigo-500 to-blue-600",
       products: [
@@ -128,7 +139,7 @@ const ProductCategory = () => {
     },
     "paper-products": {
       name: "Paper Products",
-      icon: "📄",
+      icon: <FaFileAlt size={40} />,
       description: "High-quality papers for printing and writing.",
       bgColor: "from-cyan-500 to-blue-600",
       products: [
@@ -154,13 +165,160 @@ const ProductCategory = () => {
 
   const category = categoryData[slug];
 
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Header animation
+      gsap.fromTo(".category-header",
+        {
+          y: 60,
+          opacity: 0,
+          scale: 0.9,
+          rotationX: -20
+        },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          rotationX: 0,
+          duration: 1.2,
+          ease: "power3.out"
+        }
+      );
+
+      // Simple products grid animation - fade in from bottom
+      gsap.fromTo(".product-card",
+        {
+          opacity: 0,
+          y: 60,
+          scale: 0.9
+        },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: productsRef.current,
+            start: "top 80%",
+            toggleActions: "play none none reverse"
+          }
+        }
+      );
+
+      // CTA section animation
+      gsap.fromTo(".category-cta",
+        {
+          y: 40,
+          opacity: 0,
+          scale: 0.95
+        },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: ctaRef.current,
+            start: "top 80%",
+            toggleActions: "play none none reverse"
+          }
+        }
+      );
+
+      // Redesigned enhanced hover effects
+      gsap.utils.toArray(".product-card").forEach(card => {
+        const hoverAnimation = gsap.to(card, {
+          y: -25,
+          scale: 1.1,
+          rotationY: 20,
+          rotationX: 5,
+          boxShadow: `0 35px 70px rgba(6, 182, 212, 0.5), 0 0 30px rgba(6, 182, 212, 0.3)`,
+          duration: 0.6,
+          ease: "power2.out",
+          paused: true
+        });
+
+        card.addEventListener("mouseenter", () => {
+          hoverAnimation.play();
+          gsap.to(card.querySelector('.product-stars'), {
+            scale: 1.2,
+            rotation: 10,
+            duration: 0.4,
+            ease: "elastic.out(1, 0.5)"
+          });
+          gsap.to(card.querySelector('.product-price'), {
+            scale: 1.15,
+            textShadow: `0 0 20px ${THEME.accent}`,
+            duration: 0.4,
+            ease: "power2.out"
+          });
+          gsap.to(card.querySelector('.product-button'), {
+            scale: 1.05,
+            boxShadow: `0 10px 30px rgba(6, 182, 212, 0.4)`,
+            duration: 0.4,
+            ease: "power2.out"
+          });
+        });
+
+        card.addEventListener("mouseleave", () => {
+          hoverAnimation.reverse();
+          gsap.to(card.querySelector('.product-stars'), {
+            scale: 1,
+            rotation: 0,
+            duration: 0.4,
+            ease: "power2.out"
+          });
+          gsap.to(card.querySelector('.product-price'), {
+            scale: 1,
+            textShadow: "none",
+            duration: 0.4,
+            ease: "power2.out"
+          });
+          gsap.to(card.querySelector('.product-button'), {
+            scale: 1,
+            boxShadow: "none",
+            duration: 0.4,
+            ease: "power2.out"
+          });
+        });
+      });
+
+      // Button hover animations
+      gsap.utils.toArray(".product-button, .cta-button").forEach(button => {
+        button.addEventListener("mouseenter", () => {
+          gsap.to(button, {
+            scale: 1.05,
+            boxShadow: `0 15px 35px rgba(6, 182, 212, 0.5)`,
+            duration: 0.3,
+            ease: "power2.out"
+          });
+        });
+
+        button.addEventListener("mouseleave", () => {
+          gsap.to(button, {
+            scale: 1,
+            boxShadow: "none",
+            duration: 0.3,
+            ease: "power2.out"
+          });
+        });
+      });
+
+    });
+
+    return () => ctx.revert();
+  }, [category]);
+
   if (!category) {
     return (
-      <div className="min-h-screen bg-gray-900 text-white pt-20 flex items-center justify-center">
+      <div style={{ minHeight: "100vh", background: THEME.bg, color: THEME.text }} className="pt-20 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Category Not Found</h1>
-          <p className="text-gray-300 mb-8">The requested product category does not exist.</p>
-          <Link to="/products" className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+          <h1 className="text-4xl font-bold mb-4" style={{ color: THEME.text }}>Category Not Found</h1>
+          <p className="mb-8" style={{ color: THEME.muted }}>The requested product category does not exist.</p>
+          <Link to="/products" className="cta-button px-6 py-3 rounded-lg font-semibold transition-all duration-300 inline-block" style={{ background: THEME.accent, color: THEME.bg }}>
             Back to Products
           </Link>
         </div>
@@ -178,77 +336,79 @@ const ProductCategory = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white pt-20">
+    <div style={{ minHeight: "100vh", background: THEME.bg, color: THEME.text, paddingBottom: "200px" }} className="pt-20">
       <div className="container mx-auto px-4 py-12">
         {/* Back Button */}
         <Link
           to="/products"
-          className="inline-flex items-center text-blue-400 hover:text-blue-300 mb-8 transition-colors"
+          className="inline-flex items-center mb-8 transition-all duration-300 hover:scale-105"
+          style={{ color: THEME.accent }}
         >
           <FaArrowLeft className="mr-2" />
           Back to Products
         </Link>
 
         {/* Category Header */}
-        <div className={`bg-gradient-to-r ${category.bgColor} rounded-2xl p-12 text-center mb-12`}>
-          <div className="text-8xl mb-6">{category.icon}</div>
-          <h1 className="text-5xl font-bold text-white mb-4">{category.name}</h1>
-          <p className="text-xl text-white opacity-90 max-w-3xl mx-auto">{category.description}</p>
+        <div ref={headerRef} className="category-header rounded-2xl p-8 text-center mb-8" style={{ background: THEME.accent }}>
+          <div className="mb-4 flex justify-center" style={{ color: THEME.bg }}>{category.icon}</div>
+          <h1 className="text-3xl font-bold mb-2" style={{ color: THEME.bg }}>{category.name}</h1>
+          <p className="text-base max-w-2xl mx-auto" style={{ color: THEME.surface }}>{category.description}</p>
         </div>
 
         {/* Products Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div ref={productsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {category.products.map((product) => (
             <div
               key={product.id}
-              className="bg-gray-800 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:transform hover:scale-105 border border-gray-700 hover:border-blue-500 p-6 text-center"
+              className="product-card rounded-xl shadow-lg transition-all duration-300 p-4 text-center"
+              style={{ background: THEME.surface, border: `1px solid ${THEME.border}` }}
             >
-              <div className="mb-4">
-                <h3 className="text-xl font-bold text-white mb-3">{product.name}</h3>
-                <p className="text-gray-300 text-sm mb-4 leading-relaxed">{product.description}</p>
+              <h3 className="text-lg font-semibold mb-2" style={{ color: THEME.text }}>{product.name}</h3>
+              <p className="text-xs mb-3 leading-relaxed" style={{ color: THEME.muted }}>{product.description}</p>
 
-                {/* Rating */}
-                <div className="flex items-center justify-center mb-4">
-                  <div className="flex mr-2">
-                    {renderStars(product.rating)}
-                  </div>
-                  <span className="text-gray-400 text-sm">({product.rating})</span>
+              {/* Rating */}
+              <div className="flex items-center justify-center mb-3">
+                <div className="product-stars flex mr-2">
+                  {renderStars(product.rating)}
                 </div>
-
-                {/* Price */}
-                <div className="text-3xl font-bold text-green-400 mb-6">Rs. {product.price}</div>
-
-                {/* Action Button */}
-                <button
-                  onClick={() => {
-                    const message = `I'm interested in ${product.name} - Rs. ${product.price} from ${category.name}`;
-                    const encodedMessage = encodeURIComponent(message);
-                    const whatsappUrl = `https://wa.me/923455110345?text=${encodedMessage}`;
-                    window.open(whatsappUrl, '_blank');
-                  }}
-                  className="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors flex items-center justify-center"
-                >
-                  Order via WhatsApp
-                </button>
+                <span className="text-xs" style={{ color: THEME.accent }}>({product.rating})</span>
               </div>
+
+              {/* Price */}
+              <div className="product-price text-xl font-bold mb-4" style={{ color: THEME.accent }}>Rs. {product.price}</div>
+
+              {/* Action Button */}
+              <button
+                onClick={() => {
+                  const message = `I'm interested in ${product.name} - Rs. ${product.price} from ${category.name}`;
+                  const encodedMessage = encodeURIComponent(message);
+                  const whatsappUrl = `https://wa.me/923455110345?text=${encodedMessage}`;
+                  window.open(whatsappUrl, '_blank');
+                }}
+                className="product-button w-full py-2 px-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 text-sm"
+                style={{ background: THEME.accent, color: THEME.bg }}
+              >
+                <FaWhatsapp />
+                Order
+              </button>
             </div>
           ))}
         </div>
 
         {/* Call to Action */}
-        <div className="mt-16 text-center bg-gray-800 rounded-2xl p-12">
-          <h2 className="text-3xl font-bold text-white mb-6">
+        <div ref={ctaRef} className="category-cta mt-16 text-center rounded-2xl p-12" style={{ background: THEME.surface, border: `1px solid ${THEME.border}` }}>
+          <h2 className="text-3xl font-bold mb-6" style={{ color: THEME.text }}>
             Need Something Specific?
           </h2>
-          <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
+          <p className="mb-8 max-w-2xl mx-auto" style={{ color: THEME.muted }}>
             Can't find the exact item you're looking for? Contact us for custom orders
             or to check availability of specific products.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/contact" className="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+            <Link to="/contact" className="cta-button px-8 py-3 rounded-lg font-semibold transition-all duration-300 inline-block" style={{ background: THEME.accent, color: THEME.bg }}>
               Contact Us
             </Link>
-            <Link to="/contact" className="border-2 border-gray-600 text-gray-300 px-8 py-3 rounded-lg font-semibold hover:border-white hover:text-white transition-colors">
+            <Link to="/contact" className="cta-button px-8 py-3 rounded-lg font-semibold transition-all duration-300 inline-block" style={{ background: THEME.surface, color: THEME.accent, border: `1px solid ${THEME.accent}` }}>
               Request Custom Order
             </Link>
           </div>
